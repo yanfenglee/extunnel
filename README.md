@@ -1,5 +1,5 @@
 # extunnel
-simple encrypt tunnel implemented in elixir
+simple encrypt tunnel implemented in elixir, maybe it's the smallest tunnel
 ## How to run
 1. install elixir
 2. run by
