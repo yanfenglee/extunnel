@@ -1,10 +1,11 @@
 # extunnel
-simple encrypt tunnel implemented in elixir, maybe it's the smallest tunnel
+extunnel is a network tunneling software working as an encryption wrapper between clients and servers (remote/local), it is implemented in elixir,  maybe it's the smallest tunnel, but it's fast
+
 ## How to run
 1. install elixir
 2. run by
 
- <pre> $ elixir extunnel.exs </pre>
+<pre> $ elixir extunnel.exs </pre>
  
 ## How to configure
 open extunnel.exs, modify @client, @listen, @backend, @secret
