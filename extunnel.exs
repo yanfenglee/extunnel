@@ -3,7 +3,7 @@ defmodule Extunnel do
     @client true
     @listen 1234
     @backend {'localhost', 2222}
-    @secret "extunnel"
+    @secret "It is better to light a candle than curse the darkness."
 
     def start do
         {:ok, socket} = :gen_tcp.listen(@listen,[:binary, active: false, reuseaddr: true])
