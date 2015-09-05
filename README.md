@@ -6,6 +6,10 @@ extunnel is a network tunneling software working as an encryption wrapper betwee
 2. run by
 
 <pre> $ elixir extunnel.exs </pre>
+
+run in background by
+
+<pre> $ elixir --detached extunnel.exs </pre>
  
 ## How to configure
 open extunnel.exs, modify @client, @listen, @backend, @secret
