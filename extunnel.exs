@@ -2,7 +2,7 @@
 defmodule Extunnel do
     @client true
     @listen 1234
-    @backend {'localhost', 2222}
+    @backend {'localhost', 5678}
     @secret "It is better to light a candle than curse the darkness."
 
     def start do
@@ -61,4 +61,4 @@ defmodule Extunnel do
     end
 end
 
-Extunnel.start
+#Extunnel.start
