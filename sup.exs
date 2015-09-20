@@ -1,5 +1,6 @@
 ### sup.exs
-Code.load_file("http.exs")
+Code.require_file("http.exs")
+Code.require_file("extunnel_sup.exs")
 
 defmodule Sup do
 	use Supervisor
@@ -10,12 +11,12 @@ defmodule Sup do
 
 	def init(arg) do
 		children = [
-			worker(HttpServ, [arg, [name: :Http]], restart: :permanent),
-            supervisor(Extunnel.Sup,[arg, [name: :ExtunnelSup]], restart: :permanent)
+			worker(HttpServ, [arg, [name: HttpServ]], restart: :permanent),
+            supervisor(ExtunnelSup,[arg, [name: ExtunnelSup]], restart: :permanent)
 		]
 
 		supervise(children, strategy: :one_for_one)
 	end
 end
 
-Sup.start_link 12345
+#Sup.start_link 12345
