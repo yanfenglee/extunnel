@@ -1,5 +1,5 @@
 ### http.exs
-Code.load_file("extunnel.exs")
+Code.load_file("extunnel_sup.exs")
 
 defmodule HttpServ do
 	use Supervisor
@@ -13,11 +13,13 @@ defmodule HttpServ do
 	end
 
     def start_tunnel(port) do
-        Supervisor.start_child(:ExtunnelSup, [port,[name: :"t#{port}"]])
+        IO.puts "start port: #{port}"
+        {:ok, child} = Supervisor.start_child(:ExtunnelSup, [port,[name: :"t#{port}"]])
+        IO.puts "----- start port end"
     end
 
     def stop_tunnel(port) do
-        Process.exit(:"t#{arg}", :normal)
+        Process.exit(:"t#{port}", :normal)
     end
 
 	defp listen(port) do
@@ -78,12 +80,10 @@ defmodule HttpServ do
     end
 
 	defp start(port) do
-		IO.puts "start port: #{port*2}"
         start_tunnel(port)
 	end
 
 	defp stop(port) do
-		IO.puts "stop port: #{port*20}"
         stop_tunnel(port)
 	end
 
