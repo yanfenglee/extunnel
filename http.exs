@@ -30,35 +30,43 @@ defmodule HttpServ do
     defp read(socket) do
         {:ok, data} = :gen_tcp.recv(socket, 0)
         IO.puts data
-        handleRaw(data)
+        handleRaw(socket,data)
 
         read(socket)
     end
 
-	defp handleRaw(data) do
-		sz = byte_size(data) - 13
+	defp handleRaw(socket, data) do
+		sz = byte_size(data) - 15
 		case data do
-			<<"GET ", p::binary-size(sz), " HTTP/1.1">> ->
-				handle(p)
+			<<"GET ", p::binary-size(sz), " HTTP/1.1\r\n">> ->
+				handle(socket, p)
 			_ ->
 				IO.puts "invalid #{data}"
 		end
 		
 	end
 
-	defp handle(param) do
+	defp handle(socket, param) do
 		case param do
 			<<"/start/",p::binary>> ->
 				{port,_} = Integer.parse(p)
 				start(port)
+                :ok = response(socket,"start port: #{port}")
 
 			<<"/stop/",p::binary>> ->
 				{port,_} = Integer.parse(p)
 				stop(port)
+                :ok = response(socket,"stop port: #{port}")
 
 			_ -> IO.puts "error: #{param}"
 		end
 	end
+
+    defp response(socket, data) do
+        sz = byte_size(data)
+        resp = "HTTP/1.1 200 OK\r\nContent-Length: #{sz}\r\n\r\n#{data}"
+        :gen_tcp.send(socket,resp)
+    end
 
 	defp start(port) do
 		IO.puts "start port: #{port*2}"
