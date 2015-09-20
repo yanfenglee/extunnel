@@ -1,15 +1,24 @@
+### http.exs
 Code.load_file("extunnel.exs")
 
 defmodule HttpServ do
 	use Supervisor
 
-	def start_link(arg) do
-		Supervisor.start_link(__MODULE__, arg)
-	end
+    def start_link(arg, opts) do
+      	Supervisor.start_link(__MODULE__, arg, opts)
+    end
 
 	def init(arg) do
 		listen(arg)
 	end
+
+    def start_tunnel(port) do
+        Supervisor.start_child(:ExtunnelSup, [port,[name: :"t#{port}"]])
+    end
+
+    def stop_tunnel(port) do
+        Process.exit(:"t#{arg}", :normal)
+    end
 
 	defp listen(port) do
 		{:ok, socket} = :gen_tcp.listen(port,[:binary, packet: :line, active: false, reuseaddr: true])
@@ -29,7 +38,7 @@ defmodule HttpServ do
 
     defp read(socket) do
         {:ok, data} = :gen_tcp.recv(socket, 0)
-        IO.puts data
+        #IO.puts data
         handleRaw(socket,data)
 
         read(socket)
@@ -41,7 +50,7 @@ defmodule HttpServ do
 			<<"GET ", p::binary-size(sz), " HTTP/1.1\r\n">> ->
 				handle(socket, p)
 			_ ->
-				IO.puts "invalid #{data}"
+              #IO.puts "invalid #{data}"
 		end
 		
 	end
@@ -70,10 +79,12 @@ defmodule HttpServ do
 
 	defp start(port) do
 		IO.puts "start port: #{port*2}"
+        start_tunnel(port)
 	end
 
 	defp stop(port) do
 		IO.puts "stop port: #{port*20}"
+        stop_tunnel(port)
 	end
 
 end

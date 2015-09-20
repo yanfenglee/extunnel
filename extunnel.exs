@@ -1,9 +1,23 @@
-
+### extunnel
 defmodule Extunnel do
+    use GenServer
+
     @client true
     @listen 1234
     @backend {'localhost', 5678}
     @secret "It is better to light a candle than curse the darkness."
+
+    def start_link(arg, opts) do
+        Supervisor.start_link(__MODULE__, arg, opts)
+    end
+
+    def init(arg) do
+        start
+    end
+
+    def handle_call(:test, from, state) do
+        {:reply,"test call",state}
+    end
 
     def start do
         {:ok, socket} = :gen_tcp.listen(@listen,[:binary, active: false, reuseaddr: true])

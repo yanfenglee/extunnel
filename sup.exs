@@ -1,3 +1,4 @@
+### sup.exs
 Code.load_file("http.exs")
 
 defmodule Sup do
@@ -9,7 +10,8 @@ defmodule Sup do
 
 	def init(arg) do
 		children = [
-			worker(HttpServ, [arg], restart: :permanent)
+			worker(HttpServ, [arg, [name: :Http]], restart: :permanent),
+            supervisor(Extunnel.Sup,[arg, [name: :ExtunnelSup]], restart: :permanent)
 		]
 
 		supervise(children, strategy: :one_for_one)
