@@ -4,8 +4,8 @@ defmodule ExtunnelSup do
 	use Supervisor
 
 	def start_link(arg, opts) do
+		IO.puts "extunnelsup start"
 		Supervisor.start_link(__MODULE__, arg, opts)
-        IO.puts "extunnelsup start"
 	end
 
 	def init(arg) do
@@ -16,7 +16,5 @@ defmodule ExtunnelSup do
 		]
 
         supervise(children, strategy: :simple_one_for_one)
-        IO.puts "start extunnel supervisor"
 	end
 end
-

@@ -9,7 +9,8 @@ defmodule HttpServ do
     end
 
 	def init(arg) do
-		listen(arg)
+		spawn_link fn -> listen(arg) end
+		:ignore
 	end
 
     def start_tunnel(port) do
@@ -54,7 +55,7 @@ defmodule HttpServ do
 			_ ->
               #IO.puts "invalid #{data}"
 		end
-		
+
 	end
 
 	defp handle(socket, param) do

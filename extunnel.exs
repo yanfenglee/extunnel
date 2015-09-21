@@ -12,7 +12,8 @@ defmodule Extunnel do
     end
 
     def init(arg) do
-        start
+        spawn_link fn -> start end
+        :ignore
     end
 
     def handle_call(:test, from, state) do
