@@ -1,23 +1,14 @@
 ### extunnel
 defmodule Extunnel do
-    use GenServer
 
     @client true
     @listen 1234
     @backend {'localhost', 5678}
     @secret "It is better to light a candle than curse the darkness."
 
-    def start_link(arg, opts) do
-        Supervisor.start_link(__MODULE__, arg, opts)
-    end
-
-    def init(arg) do
-        spawn_link fn -> start end
-        :ignore
-    end
-
-    def handle_call(:test, from, state) do
-        {:reply,"test call",state}
+    def start_link do
+        pid = spawn_link fn -> start end
+        {:ok, pid}
     end
 
     def start do

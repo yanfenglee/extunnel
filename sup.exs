@@ -11,12 +11,15 @@ defmodule Sup do
 
 	def init(arg) do
 		children = [
-			worker(HttpServ, [arg, [name: HttpServ]], restart: :permanent),
-            supervisor(ExtunnelSup,[arg, [name: ExtunnelSup]], restart: :permanent)
+			worker(HttpServ, [arg], function: :start_http, restart: :permanent),
+            supervisor(ExtunnelSup, [], restart: :permanent)
 		]
 
 		supervise(children, strategy: :one_for_one)
 	end
 end
 
-Sup.start_link 1111
+Sup.start_link 11112
+receive do
+	{:msg,contents} ->
+end

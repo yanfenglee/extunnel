@@ -2,20 +2,18 @@
 #Code.load_file("extunnel_sup.exs")
 
 defmodule HttpServ do
-	use Supervisor
 
-    def start_link(arg, opts) do
-      	Supervisor.start_link(__MODULE__, arg, opts)
-    end
-
-	def init(arg) do
-		spawn_link fn -> listen(arg) end
-		:ignore
+	def start_http(arg) do
+		pid = spawn_link fn -> listen(arg) end
+		#listen arg
+		IO.puts "http serv start"
+		{:ok, pid}
 	end
+
 
     def start_tunnel(port) do
         IO.puts "start port: #{port}"
-        {:ok, child} = Supervisor.start_child(:ExtunnelSup, [port,[name: :"t#{port}"]])
+        {:ok, child} = Supervisor.start_child(:ExtunnelSup, [port])
         IO.puts "----- start port end"
     end
 

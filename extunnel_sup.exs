@@ -3,16 +3,16 @@ Code.require_file("extunnel.exs")
 defmodule ExtunnelSup do
 	use Supervisor
 
-	def start_link(arg, opts) do
+	def start_link do
 		IO.puts "extunnelsup start"
-		Supervisor.start_link(__MODULE__, arg, opts)
+		Supervisor.start_link(__MODULE__, [])
 	end
 
-	def init(arg) do
+	def init([]) do
         IO.puts "extunnel sup init"
 
 		children = [
-			worker(Extunnel, [arg,[]], restart: :transient)
+			worker(Extunnel, [], function: :start_link, restart: :transient)
 		]
 
         supervise(children, strategy: :simple_one_for_one)
