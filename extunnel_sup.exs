@@ -19,9 +19,32 @@ defmodule ExtunnelSup do
 	end
 
 	def start_extunnel(port) do
-		pid = Process.whereis(:extunnelsup)
-		#IO.puts "whereis sup: #{is_pid(pid)}"
-		#IO.puts "#{Process.registered}"
-	 	Supervisor.start_child(pid, [])
+		case getpid(port) do
+			nil ->
+				pid = Process.whereis(:extunnelsup)
+				{:ok, pid} = Supervisor.start_child(pid, [port])
+
+				reg(pid, port)
+
+			pid ->
+				IO.puts "port already started: #{port}, #{inspect pid}"
+		end
+	end
+
+	defp reg(pid, port) do
+		Process.register(pid, :"t{port}")
+	end
+
+	defp getpid(port) do
+		Process.whereis(:"t{port}")
+	end
+
+	def stop_extunnel(port) do
+		case getpid(port) do
+			nil -> IO.puts "port not open: #{port}"
+			pid ->
+				Process.exit(pid, :normal)
+				IO.puts "exit port: #{port}, #{inspect pid}"
+		end
 	end
 end

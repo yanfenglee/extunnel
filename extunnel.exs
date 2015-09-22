@@ -2,18 +2,17 @@
 defmodule Extunnel do
 
     @client true
-    @listen 1234
     @backend {'localhost', 5678}
     @secret "It is better to light a candle than curse the darkness."
 
-    def start_link do
-        pid = spawn_link fn -> start end
+    def start_link(port)do
+        pid = spawn_link fn -> start(port) end
         {:ok, pid}
     end
 
-    def start do
-        {:ok, socket} = :gen_tcp.listen(@listen,[:binary, active: false, reuseaddr: true])
-        IO.puts "Accepting connections on port #{@listen}"
+    def start(port) do
+        {:ok, socket} = :gen_tcp.listen(port,[:binary, active: false, reuseaddr: true])
+        IO.puts "Accepting connections on port #{port}"
         loop_acceptor(socket)
     end
 

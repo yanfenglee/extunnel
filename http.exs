@@ -13,12 +13,14 @@ defmodule HttpServ do
 
     def start_tunnel(port) do
         IO.puts "start port: #{port}"
-        {:ok, child} = ExtunnelSup.start_extunnel(port)
+        ExtunnelSup.start_extunnel(port)
         IO.puts "----- start port end"
     end
 
     def stop_tunnel(port) do
-        Process.exit(:"t#{port}", :normal)
+		IO.puts "stop port: #{port}"
+        ExtunnelSup.stop_extunnel(port)
+		IO.puts "stop port: #{port}"
     end
 
 	defp listen(port) do
