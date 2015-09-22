@@ -70,6 +70,9 @@ defmodule HttpServ do
 				stop(port)
                 :ok = response(socket,"stop port: #{port}")
 
+			<<"/info">> ->
+				:ok = response(socket, "#{inspect Process.registered()}")
+
 			_ -> IO.puts "error: #{param}"
 		end
 	end

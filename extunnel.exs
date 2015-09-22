@@ -7,6 +7,7 @@ defmodule Extunnel do
 
     def start_link(port)do
         pid = spawn_link fn -> start(port) end
+        IO.puts "start tunnel pid: #{inspect pid}"
         {:ok, pid}
     end
 

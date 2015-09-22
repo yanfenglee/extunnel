@@ -31,20 +31,29 @@ defmodule ExtunnelSup do
 		end
 	end
 
+	defp toatom(port) do
+		:"t#{port}"
+	end
+
 	defp reg(pid, port) do
-		Process.register(pid, :"t{port}")
+		Process.register(pid, toatom(port))
+	end
+
+	defp unreg(port) do
+		Process.unregister(toatom(port))
 	end
 
 	defp getpid(port) do
-		Process.whereis(:"t{port}")
+		Process.whereis(toatom(port))
 	end
 
 	def stop_extunnel(port) do
 		case getpid(port) do
 			nil -> IO.puts "port not open: #{port}"
 			pid ->
-				Process.exit(pid, :normal)
 				IO.puts "exit port: #{port}, #{inspect pid}"
+				Process.exit(pid, :shutdown)
+				#unreg(port)
 		end
 	end
 end
