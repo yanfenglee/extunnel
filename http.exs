@@ -1,5 +1,5 @@
 ### http.exs
-#Code.load_file("extunnel_sup.exs")
+Code.load_file("extunnel_sup.exs")
 
 defmodule HttpServ do
 
@@ -13,7 +13,7 @@ defmodule HttpServ do
 
     def start_tunnel(port) do
         IO.puts "start port: #{port}"
-        {:ok, child} = Supervisor.start_child(:ExtunnelSup, [port])
+        {:ok, child} = ExtunnelSup.start_extunnel(port)
         IO.puts "----- start port end"
     end
 

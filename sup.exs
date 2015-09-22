@@ -11,8 +11,8 @@ defmodule Sup do
 
 	def init(arg) do
 		children = [
-			worker(HttpServ, [arg], function: :start_http, restart: :permanent),
-            supervisor(ExtunnelSup, [], restart: :permanent)
+			worker(HttpServ, [arg], id: :httpserv, function: :start_http, restart: :permanent),
+            supervisor(ExtunnelSup, [[name: :extunnelsup]], id: :extunnelsup, restart: :permanent)
 		]
 
 		supervise(children, strategy: :one_for_one)
