@@ -21,7 +21,7 @@ defmodule ExtunnelSup do
 				Supervisor.start_child(sup, [port, toatom(port)])
 			pid ->
 				IO.puts "port already started: #{port}, #{inspect pid}"
-				{:error, "already start"}
+				{:ok, "already start"}
 		end
 	end
 

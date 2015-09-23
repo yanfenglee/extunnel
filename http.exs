@@ -47,18 +47,23 @@ defmodule HttpServ do
 		case param do
 			<<"/start/",p::binary>> ->
 				{port,_} = Integer.parse(p)
-		        ExtunnelSup.start_extunnel(port)
-                :ok = response(socket,"start port: #{port}")
+		        case ExtunnelSup.start_extunnel(port) do
+		        	{:ok, _} ->
+						response(socket,"OK")
+					{:error,reason} ->
+						IO.puts reason
+		                response(socket,"FAIL")
+		        end
 
 			<<"/stop/",p::binary>> ->
 				{port,_} = Integer.parse(p)
 		        ExtunnelSup.stop_extunnel(port)
-                :ok = response(socket,"stop port: #{port}")
+                response(socket,"OK")
 
 			<<"/info">> ->
-				:ok = response(socket, "#{inspect Process.registered()}")
+				response(socket, "#{inspect Process.registered()}")
 
-			_ -> IO.puts "error: #{param}"
+			_ -> response(socket,"ERROR")
 		end
 	end
 
