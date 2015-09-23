@@ -3,25 +3,10 @@ Code.load_file("extunnel_sup.exs")
 
 defmodule HttpServ do
 
-	def start_http(arg) do
-		pid = spawn_link fn -> listen(arg) end
-		#listen arg
-		IO.puts "http serv start"
+	def start_http do
+		pid = spawn_link fn -> listen(31415) end
 		{:ok, pid}
 	end
-
-
-    def start_tunnel(port) do
-        IO.puts "start port: #{port}"
-        ExtunnelSup.start_extunnel(port)
-        IO.puts "----- start port end"
-    end
-
-    def stop_tunnel(port) do
-		IO.puts "stop port: #{port}"
-        ExtunnelSup.stop_extunnel(port)
-		IO.puts "stop port: #{port}"
-    end
 
 	defp listen(port) do
 		{:ok, socket} = :gen_tcp.listen(port,[:binary, packet: :line, active: false, reuseaddr: true])
@@ -62,12 +47,12 @@ defmodule HttpServ do
 		case param do
 			<<"/start/",p::binary>> ->
 				{port,_} = Integer.parse(p)
-				start(port)
+		        ExtunnelSup.start_extunnel(port)
                 :ok = response(socket,"start port: #{port}")
 
 			<<"/stop/",p::binary>> ->
 				{port,_} = Integer.parse(p)
-				stop(port)
+		        ExtunnelSup.stop_extunnel(port)
                 :ok = response(socket,"stop port: #{port}")
 
 			<<"/info">> ->
@@ -83,14 +68,4 @@ defmodule HttpServ do
         :gen_tcp.send(socket,resp)
     end
 
-	defp start(port) do
-        start_tunnel(port)
-	end
-
-	defp stop(port) do
-        stop_tunnel(port)
-	end
-
 end
-
-#HttpServ.handleRaw "GET /start/123 HTTP/1.1"

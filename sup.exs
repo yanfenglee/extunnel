@@ -5,21 +5,21 @@ Code.require_file("extunnel_sup.exs")
 defmodule Sup do
 	use Supervisor
 
-	def start_link(arg) do
-		Supervisor.start_link(__MODULE__, arg)
+	def start_link do
+		Supervisor.start_link(__MODULE__, [])
 	end
 
-	def init(arg) do
+	def init([]) do
 		children = [
-			worker(HttpServ, [arg], id: :httpserv, function: :start_http, restart: :permanent),
-            supervisor(ExtunnelSup, [[name: :extunnelsup]], id: :extunnelsup, restart: :permanent)
+			worker(HttpServ, [], function: :start_http, restart: :permanent),
+            supervisor(ExtunnelSup, [[name: :extunnelsup]], restart: :permanent)
 		]
 
 		supervise(children, strategy: :one_for_one)
 	end
 end
 
-Sup.start_link 11112
+Sup.start_link
+
 receive do
-	{:msg,contents} ->
 end
