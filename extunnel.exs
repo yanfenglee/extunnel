@@ -1,21 +1,25 @@
 ### extunnel
 defmodule Extunnel do
+    use GenServer
 
     @client true
     @backend {'localhost', 5678}
     @secret "It is better to light a candle than curse the darkness."
 
-    def start_link(port, name)do
-        pid = spawn_link fn -> start(port) end
-        IO.puts "start tunnel pid: #{inspect pid}"
-        Process.register(pid, name)
-        {:ok, pid}
+    def start_link(port, name) do
+        GenServer.start_link(__MODULE__, port, [name: name])
     end
 
-    def start(port) do
-        {:ok, socket} = :gen_tcp.listen(port,[:binary, active: false, reuseaddr: true])
-        IO.puts "Accepting connections on port #{port}"
-        loop_acceptor(socket)
+    def init(port) do
+        case :gen_tcp.listen(port,[:binary, active: false, reuseaddr: true]) do
+            {:ok, socket} ->
+                IO.puts "Accepting connections on port #{port}"
+                pid = spawn_link fn -> loop_acceptor(socket) end
+                {:ok, pid}
+            {:error, reason} ->
+                {:stop, reason}
+        end
+
     end
 
     defp loop_acceptor(socket) do

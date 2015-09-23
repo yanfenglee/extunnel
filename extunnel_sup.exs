@@ -18,9 +18,10 @@ defmodule ExtunnelSup do
 		case getpid(port) do
 			nil ->
 				sup = Process.whereis(:extunnelsup)
-				{:ok, _} = Supervisor.start_child(sup, [port, toatom(port)])
+				Supervisor.start_child(sup, [port, toatom(port)])
 			pid ->
 				IO.puts "port already started: #{port}, #{inspect pid}"
+				{:error, "already start"}
 		end
 	end
 
