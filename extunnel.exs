@@ -5,9 +5,10 @@ defmodule Extunnel do
     @backend {'localhost', 5678}
     @secret "It is better to light a candle than curse the darkness."
 
-    def start_link(port)do
+    def start_link(port, name)do
         pid = spawn_link fn -> start(port) end
         IO.puts "start tunnel pid: #{inspect pid}"
+        Process.register(pid, name)
         {:ok, pid}
     end
 

@@ -22,10 +22,7 @@ defmodule ExtunnelSup do
 		case getpid(port) do
 			nil ->
 				pid = Process.whereis(:extunnelsup)
-				{:ok, pid} = Supervisor.start_child(pid, [port])
-
-				reg(pid, port)
-
+				{:ok, pid} = Supervisor.start_child(pid, [port, toatom(port)])
 			pid ->
 				IO.puts "port already started: #{port}, #{inspect pid}"
 		end
@@ -35,14 +32,6 @@ defmodule ExtunnelSup do
 		:"t#{port}"
 	end
 
-	defp reg(pid, port) do
-		Process.register(pid, toatom(port))
-	end
-
-	defp unreg(port) do
-		Process.unregister(toatom(port))
-	end
-
 	defp getpid(port) do
 		Process.whereis(toatom(port))
 	end
@@ -50,10 +39,7 @@ defmodule ExtunnelSup do
 	def stop_extunnel(port) do
 		case getpid(port) do
 			nil -> IO.puts "port not open: #{port}"
-			pid ->
-				IO.puts "exit port: #{port}, #{inspect pid}"
-				Process.exit(pid, :shutdown)
-				#unreg(port)
+			pid -> Process.exit(pid, :shutdown)
 		end
 	end
 end
