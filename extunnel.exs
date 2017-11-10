@@ -1,8 +1,8 @@
 
 defmodule Extunnel do
     @client true
-    @listen 1234
-    @backend {'localhost', 2222}
+    @listen 31415
+    @backend {'localhost', 27182}
     @secret "It is better to light a candle than curse the darkness."
 
     def start do
@@ -32,7 +32,7 @@ defmodule Extunnel do
             spawn_link fn -> pump(backend, frontend, state) end
 
             receive do
-                {:EXIT,_,_} -> :gen_tcp.close(frontend)
+                {:EXIT,_,_} -> :gen_tcp.close(frontend); :gen_tcp.close(backend);
             end
         end
     end
