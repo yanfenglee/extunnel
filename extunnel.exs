@@ -43,8 +43,14 @@ defmodule Extunnel do
             spawn_link fn -> pump(backend, frontend, state) end
 
             receive do
-                {:EXIT,_,_} -> :gen_tcp.close(frontend)
+                {:EXIT,_,_} -> nil
             end
+            receive do
+                {:EXIT,_,_} -> nil
+            end
+
+            :gen_tcp.close(frontend)
+            :gen_tcp.close(backend)
         end
     end
 
