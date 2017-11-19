@@ -34,9 +34,6 @@ defmodule Extunnel do
             receive do
                 {:EXIT,_,_} -> nil
             end
-            receive do
-                {:EXIT,_,_} -> nil
-            end
 
             :gen_tcp.close(frontend)
             :gen_tcp.close(backend)
