@@ -1,6 +1,5 @@
 
 defmodule Extunnel do
-    @client true
     @listen 31415
     @backend {'localhost', 27182}
     @secret "It is better to light a candle than curse the darkness."
@@ -49,11 +48,7 @@ defmodule Extunnel do
     end
 
     defp enc(data, state) do
-        if @client do
-            :crypto.stream_encrypt(state, data)
-        else
-            :crypto.stream_decrypt(state, data)
-        end
+        :crypto.stream_encrypt(state, data)
     end
 
     defp read(socket) do
