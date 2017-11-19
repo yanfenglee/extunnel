@@ -15,30 +15,33 @@ defmodule Extunnel do
         case :gen_tcp.accept(socket) do
             {:ok, frontend} ->
                 state = :crypto.stream_init(:rc4, @secret)
-                do_pump(frontend, state)
+                on_accept(frontend, state)
             {:error, reason} ->
                 IO.puts "accept error: #{inspect reason}"
         end
         loop_acceptor(socket)
     end
 
-    defp do_pump(frontend, state) do
+    defp on_accept(frontend, state) do
         spawn fn ->
-            Process.flag(:trap_exit, true)
-
             {ip,port} = @backend
-            {:ok, backend} = :gen_tcp.connect(ip, port, [:binary, active: false])
-            spawn_link fn -> pump(frontend, backend, state) end
-            spawn_link fn -> pump(backend, frontend, state) end
-
-            receive do
-                {:EXIT,_,_} -> nil
+            case :gen_tcp.connect(ip, port, [:binary, active: false]) do
+                {:ok, backend} -> pump_all(frontend, backend, state)
+                _ -> nil
             end
-
             :gen_tcp.close(frontend)
-            :gen_tcp.close(backend)
         end
     end
+
+    defp pump_all(frontend, backend, state) do
+        Process.flag(:trap_exit, true)
+        spawn_link fn -> pump(frontend, backend, state) end
+        spawn_link fn -> pump(backend, frontend, state) end
+
+        receive do
+            {:EXIT,_,_} -> :gen_tcp.close(backend)
+        end
+    end 
 
     defp pump(s1, s2, state) do
         newstate = s1 |> read |> enc(state) |> write(s2)
