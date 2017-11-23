@@ -18,13 +18,11 @@ example:
 
 <pre>
   client side:
-    @client true
     @listen 1234
     @backend {'127.0.0.1', 5555}
     @secret "It is better to light a candle than curse the darkness."
     
   sever side:
-    @client false
     @listen 5555
     @backend {'127.0.0.1', 6666}
     @secret "It is better to light a candle than curse the darkness."
